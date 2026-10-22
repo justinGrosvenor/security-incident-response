@@ -45,6 +45,8 @@ Inspect runtime path/version and CI/Docker pins only after selecting trusted too
 
 Use a trusted semver implementation for npm ranges; prereleases, aliases and multiple installed copies matter. An audit finding's parent/meta-vulnerability record may represent the same root issue, but do not dismiss unrelated advisories. Preserve raw audit JSON plus precise dispositions. Inspect actual published tarballs and bundled native files if the project distributes them; source dependency changes alone do not establish what consumers received.
 
+For Node.js runtime/Brotli incidents, also follow [the Node/Brotli procedure](node-brotli-response.md), including inbound middleware, outbound HTTP clients, direct decoding, actual runtime builds and separately linked/embedded consumers. Apply it to the JavaScript/TypeScript inventory above; a dependency manifest is not a runtime inventory.
+
 ## PHP and Composer
 
 Follow [the PHP runtime and package procedure](php-runtime-response.md). Statically compare manifests, lockfiles and installed JSON without loading PHP metadata, autoloaders, plugins or application commands. Inventory CLI, FPM/CGI, Apache modules, embedded interpreters, persistent workers and builder/final images separately. Composer audits and platform overrides do not establish engine safety; match actual builds or vendor backports and verify authorized worker replacement.

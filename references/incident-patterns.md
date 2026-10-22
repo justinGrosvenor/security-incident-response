@@ -57,6 +57,8 @@ Runtime-embedded compression, TLS, parsers and crypto are inherited without an a
 
 PHP needs separate engine, extension, Composer and serving-worker checks. Follow [the PHP procedure](php-runtime-response.md), including embedded interpreters and installations without Composer metadata. A patched CLI or clean Composer audit does not clear a web server's loaded runtime.
 
+For Brotli incidents, follow [the Node/Brotli procedure](node-brotli-response.md). Trace decoder reachability through request bodies, fetched responses and non-HTTP inputs, then verify each runtime or linked library. Inbound filtering alone does not protect outbound fetches or offline jobs.
+
 Use upstream harmless regression fixtures rather than an exploit against production. A changed decoder error can verify that decoder's fix but not all runtime flaws. Confirm native ABI/FFI when changing runtimes. Distribution backports require exact package revision/security records, not upstream version comparison alone.
 
 ## 5. Certificate authority failures

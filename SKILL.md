@@ -1,12 +1,14 @@
 ---
 name: security-incident-response
 license: MIT
-description: Investigate newly disclosed vulnerabilities and supply-chain incidents across developer machines, repositories, CI, packages, and deployments; determine exposure, remediate within the requested scope, and verify running artifacts. Use for incident response or broad security triage, rather than ordinary dependency maintenance.
+description: Investigate exposure to the October 19–22, 2026 security incident cluster across developer machines, repositories, CI, packages and deployments. Created in response to the certificate-authority compromise, with particular attention to hidden runtime dependencies and independent trust stores that ordinary dependency audits miss. Verify current incident facts, obtain permission for each project, remediate within scope and verify running artifacts. Use for incident response, rather than routine dependency maintenance.
 ---
 
 # Security Incident Response
 
 Turn incident reports into an evidence-backed exposure assessment and verified remediation. Assess the developer machine as well as projects; compromised tooling can reach credentials and unrelated repositories.
+
+This skill targets the October 19–22, 2026 incident cluster. It grew out of the certificate-authority compromise, which exposed a gap ordinary dependency audits cannot resolve: browsers, runtimes, SDKs and containers can use independent trust stores, so updating one does not prove the others are protected. Trace those less visible dependencies and trust paths through the actual clients and deployed artifacts. Refresh incident facts at each use; the target dates describe the skill's origin, not a frozen list of affected versions.
 
 ## Start here
 
@@ -23,6 +25,8 @@ Host/shared approval covers only the named global scopes; it does not waive proj
 Read [the response workflow](references/response-workflow.md), [incident matching methods](references/incident-patterns.md), and [scan recipes](references/scan-recipes.md). Fetch current primary incident reports and exact affected versions, digests, hashes, time windows, and indicators at invocation. This skill intentionally contains no organization/project inventory or fixed incident allowlist. Use the historical incidents' general lessons, not assumptions about another developer's machine.
 
 For PHP, Composer, CMS installations or servers bundling a PHP interpreter, also read [the PHP runtime and package procedure](references/php-runtime-response.md). Cover each server interface and running worker, not only application dependencies or the host CLI.
+
+For Node.js or Brotli decoder incidents, read [the Node/Brotli procedure](references/node-brotli-response.md). Trace inbound parsing, outbound response decompression, direct decoder callers and separately embedded/linked consumers; an inbound WAF or clean package audit does not cover every path.
 
 ## Essential decision rules
 

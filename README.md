@@ -1,6 +1,8 @@
 # Security Incident Response
 
-A reusable agent skill for investigating package compromises, newly disclosed vulnerabilities, certificate trust failures, and related developer-tooling exposure.
+A reusable agent skill targeting the October 19–22, 2026 cluster of security disclosures and supply-chain incidents.
+
+It grew out of the certificate-authority compromise, which exposed a gap ordinary dependency audits cannot resolve: browsers, runtimes, SDKs and containers can use independent trust stores, so updating one does not prove the others are protected. The skill traces those less visible dependencies and trust paths across developer tooling, packages, builds and running deployments. Incident facts are refreshed at each use; the target dates do not freeze the affected-version criteria.
 
 It asks permission before inspecting each project. Within approved scope, it traces declared, installed, cached, built, automated and running components; checks current primary incident reports; proposes or performs authorized remediation; and records evidence and remaining uncertainty.
 
@@ -19,6 +21,8 @@ Provide incident links if you have them. The skill also directs the agent to res
 The agent will discover candidate identities from minimal metadata, then offer **scan only**, **scan and patch locally**, or **skip** for each project. Pending choices remain pending. Global/shared environments need separate scope approval. Source patches and tests are separate from publication and deployment.
 
 The [PHP procedure](references/php-runtime-response.md) covers Composer dependencies and the engine independently, including CMS installations, FPM, Apache modules, embedded interpreters, vendor backports, container builds and verification of active workers. It is an investigation procedure; the bundled executable helper scans Python metadata only.
+
+The [Node/Brotli procedure](references/node-brotli-response.md) traces inbound parsing, outbound response decompression, remote image/content fetching, direct decoder APIs and separately linked or embedded consumers. It requires actual build/patch evidence and verified activation; an inbound WAF is not treated as coverage for every path.
 
 ## Static Python helper
 
