@@ -1,0 +1,4 @@
+interface:
+  display_name: "Security Incident Response"
+  short_description: "Investigate incidents and verify project remediation"
+  default_prompt: "Use $security-incident-response to research current incidents, discover candidate projects, ask permission before scanning each project, and identify compromised or vulnerable packages with evidence."

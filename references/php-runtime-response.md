@@ -1,0 +1,53 @@
+# PHP runtime and package response
+
+Use this procedure when an incident involves PHP, a PHP extension, Composer packages, or software bundling PHP. Apply the entrypoint's per-project permission, canonical-root checks and descendant exclusions first. Host package databases, shared web servers, containers and remote hosting need their own named scope; project approval does not authorize restarting them. Start with static evidence from trusted tools, not a project PHP executable.
+
+## Establish the incident criteria
+
+Fetch current PHP security announcements and the relevant upstream or distributor advisory. Record affected branches/builds, extensions, server interfaces (SAPIs), request prerequisites, fixed releases or vendor package revisions, and unresolved conditions. Follow [PHP's current announcements](https://www.php.net/) and [supported-version policy](https://www.php.net/supported-versions.php); do not keep a fixed minimum-version list in this skill. For a distribution backport, require the exact distribution release, package name, full revision and vendor advisory confirming the fix. A lower upstream version can be patched; a newer development build is not automatically patched. Unsupported branches require a supported migration or verifiable extended-support fix.
+
+Separate three questions: is the engine/extension vulnerable, is an application dependency affected, and was an artifact malicious or tampered with? A clean dependency audit answers neither engine safety nor absence of compromise. The October 2026 PHP disclosures illustrate why: memory/error-handling flaws allowed demonstrated code execution through mod_php and certain PHP-FPM paths; some exploitation preceded application code. Match each interface's actual prerequisites rather than declaring every PHP installation exploited. [PHP Foundation disclosure](https://thephp.foundation/blog/2026/10/21/todays-php-security-release-and-how-were-strengthening-php-security/).
+
+## Discover the complete approved surface
+
+Look beyond `.php` files and `composer.json`. CMS installations can lack Composer metadata. Service definitions, Apache module configuration, FPM pools, reverse-proxy upstreams, scheduled jobs, queue workers, development servers, CI setup and every container build stage can identify separate PHP installations. Inspect configuration selectively; redact authentication URLs and sensitive values instead of dumping entire files. A proxy's version does not identify the PHP backend.
+
+| Surface | Evidence to collect within its approved scope |
+| --- | --- |
+| CLI, scheduled tasks and queues | Resolved executable/build, package origin, invocation's runtime selection and persistent worker identity |
+| FPM/CGI and Apache mod_php | Service/pool or loaded module path, package/build, active worker generation and associated deployment |
+| Embedded or persistent servers | Actual bundled interpreter/extension build and binary or image digest, including worker mode |
+| CI, builder and final images | Each stage's runtime, immutable image/platform digest, copied binaries/libraries, and executed job history |
+| Dormant images, templates and caches | Artifact identity and startup/rebuild path; distinguish future exposure from an active service |
+
+Absence of `php` on the host PATH does not exclude embedded PHP. For example, [FrankenPHP standalone binaries](https://frankenphp.dev/docs/embed/) can contain the interpreter, application and web server. Updating host PHP or Composer dependencies cannot replace that bundled engine. A mutable `latest` tag is not a build identity. Do not start a suspect image or binary to discover its version: first inspect trusted provenance, SBOM, package records or static filesystem evidence, noting missing proof.
+
+## Inspect Composer without bootstrapping the project
+
+Read bounded regular files using a trusted JSON parser. Compare `composer.json`, `composer.lock` and `vendor/composer/installed.json`; account for production and development packages, transitive dependencies, source/dist references and discrepancies. Handle both installed JSON layouts (package array or object containing `packages`). Missing or inconsistent installed metadata is an unknown, not an empty installation.
+
+Establish effective manifest/lock filenames and dependency paths from approved invocation/configuration evidence, including `COMPOSER`, `config.vendor-dir` and `COMPOSER_VENDOR_DIR`. Inspect the selected vendor directory's `composer/installed.json`. External or symlinked targets remain pending their own scope approval; do not dump environment variables. [Composer path configuration](https://getcomposer.org/doc/06-config.md#vendor-dir), [manifest and environment overrides](https://getcomposer.org/doc/03-cli.md#environment-variables).
+
+Inspect requirement constraints, `config.platform`, plugin allowances, scripts and autoload declarations as data. Platform overrides can simulate a different PHP version; they do not prove the executing engine. A lockfile records resolution, not the deployed vendor tree or artifact provenance. Match package versions/references against current primary advisories; for compromise, compare verified artifact hashes and installation/execution history as well as names. Treat private registry identities and URLs as sensitive.
+
+Never `include`/`require` `installed.php`, `vendor/autoload.php`, application entrypoints, framework CLIs or tests merely to inventory packages. Autoload files, plugins and scripts may execute code. Do not run `composer install`, `update` or `dump-autoload` as discovery. Composer warns that plugins can run during commands and that untrusted repositories require isolation; `--no-plugins --no-scripts` reduces execution paths but is not a sandbox. Do not run suspect tooling as root. [Composer's execution-safety guidance](https://getcomposer.org/doc/faqs/how-to-install-untrusted-packages-safely.md).
+
+When malicious execution is plausible, statically trace `autoload.files` and generated autoload maps to referenced files. Inspect relevant `php.ini`/scanned INI files, FPM/Apache overrides and `.user.ini` for unexpected `auto_prepend_file`, `auto_append_file`, `opcache.preload`, `extension` or `zend_extension` entries, respecting which settings each SAPI permits. Compare with trusted baselines and preserve evidence; external targets still require their own scope approval. Replacing `vendor` alone does not establish eradication. [Composer file autoloading](https://getcomposer.org/doc/04-schema.md#files), [PHP configuration](https://www.php.net/manual/en/configuration.file.php), [per-directory configuration](https://www.php.net/manual/en/configuration.file.per-user.php), [OPcache preload](https://www.php.net/manual/en/opcache.configuration.php#ini.opcache.preload).
+
+Only after execution trust and the relevant scope are established, a trusted Composer/PHP pair may supplement static evidence with `audit --locked` and `check-platform-reqs`, using both disabling flags above. Approve network access and disclosure of private package identifiers before online audits. The former checks the lockfile; the latter ignores platform overrides but describes its own execution environment, not another SAPI or host. Neither proves a runtime vulnerability fixed. [Composer CLI documentation](https://getcomposer.org/doc/03-cli.md).
+
+Record the trusted Composer version, effective advisory/malware policy, ignore rules and unavailable sources before interpreting audit output. Account for that version's current policy or legacy audit settings. A zero exit status is not an unsuppressed, complete incident assessment. [Composer audit policy](https://getcomposer.org/doc/06-config.md#policy).
+
+PHP startup configuration can load extensions and other code. Even a version probe executes the selected binary. For an approved trusted CLI, `-n` avoids `php.ini`; it does not establish binary/host integrity or report web-worker configuration. Do not run a suspect interpreter or use `php -i`/public `phpinfo()` dumps to obtain evidence. [PHP CLI options](https://www.php.net/manual/en/features.commandline.options.php).
+
+## Remediate and activate the fix
+
+Within scan-and-patch approval, prepare the smallest complete fix across affected runtime packages, native extensions, embedded builders, final images and application dependencies. Retain lockfile consistency, required extension support and native ABI compatibility. Use maintained trusted build inputs and verify resulting artifacts. For managed hosting, obtain provider evidence for the exact runtime/deployment; a generic status-page assurance is insufficient.
+
+Propose service-specific activation and rollback steps for separate approval. Map all pools, replicas, Apache modules, persistent application/queue workers and scheduled invocations before deploying or restarting. Shared-service impact may cross project boundaries. Package files on disk do not replace a loaded engine; resetting OPcache or restarting only a proxy does not establish that web workers use a patched engine. Changing memory limits or disabling functions is not a verified substitute unless the incident's vendor explicitly validates that mitigation. Configuration and pool behavior differ by SAPI. [FPM configuration reference](https://www.php.net/manual/en/install.fpm.configuration.php).
+
+After approved activation, verify the immutable artifact and actual serving runtime in every affected pool/replica, and verify old vulnerable workers have drained or exited. Use existing private diagnostics or an explicitly approved minimal temporary probe; report only necessary build/SAPI facts, restrict access and remove it afterward. Test relevant normal application requests, authentication/session behavior, uploads, database access and background work without exposing customer data. Use harmless upstream regression tests in isolation when appropriate; never fire a public RCE proof of concept at production.
+
+## Close each finding accurately
+
+Record before/after runtime and package identity, advisory/backport proof, image/binary digest, activation evidence and functional results. Keep prepared, built, published, deployed and verified-running states distinct. An unrebuilt template, unknown embedded build, unsupported runtime, uninspected hosting environment or old live worker remains an explicit pending item. If execution or tampering is suspected, preserve evidence and follow the broader containment and credential-response workflow; patching alone does not clear a compromised host. No PHP match, clean Composer output or passing request test establishes universal safety.
