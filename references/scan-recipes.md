@@ -35,6 +35,10 @@ Supply additional exact indicator filenames from current verified reporting usin
 
 Normalize distribution names using Python packaging rules (case folding and dash/underscore/dot equivalence). Match the current incident profile against metadata and exact artifact hashes. Use a trusted PEP 440 implementation when ranges matter; do not approximate with string comparison. Inspect lockfiles (`uv`, pip-tools, Poetry, Pipenv, requirements), wheel caches, pipx/tool environments and CI/container layers as separately authorized. Inspect legacy egg formats and manually installed modules if the metadata inventory is incomplete. Check explicit path overrides and running interpreter paths.
 
+Inspect environment seeds as archives too: standard-library `ensurepip/_bundled` wheels, alternative distribution wheel directories and virtualenv app-data seeds can carry independent vendored trust. A clean installed environment or updated OS CA package does not repair a stale seed used by the next venv. Disabling automatic ensurepip installation does not prove its wheel was removed. Distinguish a dormant seed, an installed package, execution history and the actual client's trust result.
+
+Prefer a verified vendor correction. If a local seed backport is authorized, verify the reference wheel and its contents, guard original source/artifact hashes, align the selector with the replacement, account for alternative wheel-directory precedence and stale bytecode, and record the local correction without inventing a distributor version. Test bootstrapping a disposable environment with trusted tooling and no network installs; do not execute a suspect interpreter to inspect its seed. Successful host bootstrapping does not verify the guest's SSL client, running image or deployment.
+
 Do not run a suspect Python executable with `--version` merely because it looks read-only; normal startup still runs hooks. A clean trusted interpreter using `-I -S` can read suspect environment files, but does not make the suspect host clean. Do not add an entire suspect site directory to `sys.path` and import its utilities to aid inspection.
 
 ## JavaScript/TypeScript

@@ -20,6 +20,10 @@ A separate behavioral evaluation assessed seven approved synthetic projects and 
 
 A subsequent live catalogue reconciliation reproduced two feed blind spots: default GitHub queries omit unreviewed/malware categories, and some primary runtime notices remain absent across those categories. Fully paginated category queries and direct vendor-ID comparison supported a focused workflow correction. Published versus modified dates, source classification, CVE versus malware counts, and catalogue versus project-assessment status remain explicit. This was a read-only public-feed check, not a new project exposure assessment; the earlier fresh-agent evaluations predate this correction.
 
+Follow-up artifact and client checks exercised independent JDK/IDE trust stores, vendor-generated certificate blocklists, newly published chain classes and legitimate-service controls. Independent review checked the resulting Java guidance and the distinction between installed and running runtimes. These checks also exposed stale environment seeds despite corrected OS roots, prompting the focused ensurepip/virtualenv seed procedure.
+
+A further fresh agent evaluated an approved synthetic guest plus a separate trusted-host bootstrap result. It distinguished fixed OS roots, an affected dormant wheel, absent installed pip, unknown guest TLS and an independently demonstrated host bootstrap. It did not infer execution or guest delivery from seed presence or a passing host test. The evaluation prohibited live scans, network access and writes; the agent honored that narrower authorization and identified missing exact artifact/primary-source facts rather than inventing them. No guest code, real project or private host configuration was executed or inspected. This is a behavioral procedure check; the Python inventory helper is unchanged.
+
 Initial reviews found material issues, which were fixed and retested:
 
 - Recursion could cross a nested project boundary. The workflow now requires boundary preflight, explicit exclusions and independent approvals. The helper reports common nested markers and skips them pending explicit roots.
