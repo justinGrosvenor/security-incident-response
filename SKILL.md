@@ -28,6 +28,8 @@ For PHP, Composer, CMS installations or servers bundling a PHP interpreter, also
 
 For Node.js or Brotli decoder incidents, read [the Node/Brotli procedure](references/node-brotli-response.md). Trace inbound parsing, outbound response decompression, direct decoder callers and separately embedded/linked consumers; an inbound WAF or clean package audit does not cover every path.
 
+For SSH authentication incidents or Linux image refreshes, read [the SSH server and Linux image procedure](references/ssh-linux-images.md). Distinguish an SSH client from a running server, check effective authentication settings and distro backports, and preserve access when replacing a daemon.
+
 ## Essential decision rules
 
 - Distinguish a vulnerable implementation, a compromised artifact, a vendor account breach, and a certificate trust failure. Each needs different evidence and remediation.

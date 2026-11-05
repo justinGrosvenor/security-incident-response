@@ -24,6 +24,8 @@ The [PHP procedure](references/php-runtime-response.md) covers Composer dependen
 
 The [Node/Brotli procedure](references/node-brotli-response.md) traces inbound parsing, outbound response decompression, remote image/content fetching, direct decoder APIs and separately linked or embedded consumers. It requires actual build/patch evidence and verified activation; an inbound WAF is not treated as coverage for every path.
 
+The [SSH/Linux image procedure](references/ssh-linux-images.md) distinguishes SSH clients from servers, checks libc, effective authentication settings and distribution backports, and verifies active daemons after authorized replacement. It also covers preventive Alpine build refreshes without treating every Alpine container as exposed.
+
 ## Static Python helper
 
 The helper uses the Python standard library and performs no network calls, subprocess execution, package imports, installations or remediation. Select a trusted interpreter; do not use a potentially compromised project interpreter for inspection.
